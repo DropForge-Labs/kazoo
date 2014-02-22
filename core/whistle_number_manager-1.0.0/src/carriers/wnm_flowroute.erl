@@ -29,7 +29,7 @@
 %% in a rate center
 %% @end
 %%--------------------------------------------------------------------
--spec find_numbers(ne_binary(), pos_integer(), wh_proplist()) ->
+-spec find_numbers(ne_binary(), 1..200, wh_proplist()) ->
                           {'ok', wh_json:object()} |
                           {'error', term()}.
 find_numbers(<<"+", Rest/binary>>, Quantity, Opts) ->
@@ -37,8 +37,8 @@ find_numbers(<<"+", Rest/binary>>, Quantity, Opts) ->
 find_numbers(<<"1", Rest/binary>>, Quantity, Opts) ->
     find_numbers(Rest, Quantity, Opts);
 find_numbers(<<NPA:3/binary>>, Quantity, _) ->
-    Props = [{"npa", wh_util:to_list(NPA)}
-             %,{"limit", wh_util:to_list(Quantity)}
+    Props = [{"limit", wh_util:to_list(Quantity)}
+             ,{"npa", wh_util:to_list(NPA)}
             ],
     case make_numbers_request(Props) of
         {'error', _}=E -> E;
@@ -55,22 +55,22 @@ find_numbers(Search, Quantity, _) ->
     case size(NpaNxx) of
       Len when Len =< 3 ->
         Npa = binary:part(NpaNxx, 0, size(NpaNxx)),
-        Props = [{"npa", wh_util:to_list(Npa)}
-                  %,{"limit", wh_util:to_list(Quantity)}
+        Props = [{"limit", wh_util:to_list(Quantity)}
+                  ,{"npa", wh_util:to_list(Npa)}
                  ];
       Len when Len > 3  andalso Len =< 6 ->
         Npa = binary:part(NpaNxx, 0, 3),
         Nxx = binary:part(NpaNxx, 3, size(NpaNxx)),
-        Props = [{"npa", wh_util:to_list(Npa)}
+        Props = [{"limit", wh_util:to_list(Quantity)}
+                  ,{"npa", wh_util:to_list(Npa)}
                   ,{"nxx", wh_util:to_list(Nxx)}
-                  %,{"limit", wh_util:to_list(Quantity)}
                  ];
        _ ->
          Npa = binary:part(NpaNxx, 0, 3),
          Nxx = binary:part(NpaNxx, 3, 6),
-         Props = [{"npa", wh_util:to_list(Npa)}
+         Props = [{"limit", wh_util:to_list(Quantity)},
+                   ,{"npa", wh_util:to_list(Npa)}
                    ,{"nxx", wh_util:to_list(Nxx)}
-                   %,{"limit", wh_util:to_list(Quantity)}
                   ]
     end,
 
