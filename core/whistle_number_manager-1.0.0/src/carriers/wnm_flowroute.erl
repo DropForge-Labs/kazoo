@@ -46,7 +46,10 @@ find_numbers(<<NPA:3/binary>>, Quantity, _) ->
             {Numbers} = wh_json:get_value(<<"tns">>, JObj),
             Resp = [begin
                         {Num, {Details}} = Number,
-                        {Num, Details}
+                        ConvertFun = fun({X,Y}) -> {X,list_to_binary(Y)} end.
+                        StingConverted = lists:map(ConvertFun, Details).
+                        NumObj = ejson:encode(StingConverted).
+                        {Num, NumObj}
                     end
                     || Number <- Numbers],
             {'ok', wh_json:from_list(Resp)}
@@ -81,7 +84,10 @@ find_numbers(Search, Quantity, _) ->
             {Numbers} = wh_json:get_value(<<"tns">>, JObj),
             Resp = [begin
                         {Num, {Details}} = Number,
-                        {Num, Details}
+                        ConvertFun = fun({X,Y}) -> {X,list_to_binary(Y)} end.
+                        StingConverted = lists:map(ConvertFun, Details).
+                        NumObj = ejson:encode(StingConverted).
+                        {Num, NumObj}
                     end
                     || Number <- Numbers],
             {'ok', wh_json:from_list(Resp)}
