@@ -18,7 +18,7 @@
 
 -define(FR_NUMBER_URL, whapps_config:get_string(?WNM_FR_CONFIG_CAT
                                                    ,<<"numbers_api_url">>
-                                                   ,<<"https://api.flowroute.com/public/v1/available-tns/tns/">>)).
+                                                   ,<<"https://api.flowroute.com/v1/available-tns/tns/">>)).
 
 -define(FR_DEBUG, whapps_config:get_is_true(?WNM_FR_CONFIG_CAT, <<"debug">>, 'false')).
 
@@ -134,7 +134,7 @@ make_numbers_request(Props) ->
                ,{"X-Timestamp", Timestamp}
                ,{"Content-Type", "application/json"}],
     HTTPOptions = [{ssl,[{verify,0}]}
-                   ,{basic_auth, {TechPrefix, wh_util:to_hex(Signature)}}
+                   ,{basic_auth, {TechPrefix, wh_util:to_lower_string(Signature)}}
                    ,{inactivity_timeout, 180000}
                    ,{connect_timeout, 180000}
                   ],
