@@ -115,7 +115,7 @@ make_numbers_request(Props) ->
     TechPrefix = whapps_config:get_string(?WNM_FR_CONFIG_CAT, <<"tech_prefix">>, <<>>),
     SecretKey = whapps_config:get_string(?WNM_FR_CONFIG_CAT, <<"secret_key">>, <<>>),
     {{Year, Month, Day}, {Hour, Minute, Second}} = calendar:now_to_universal_time(now()),
-    Timestamp = lists:flatten(io_lib:format("~B-~2..0B-~2..0B-T~2..0B:~2..0B:~2..0BZ", [Year, Month, Day, Hour, Minute, Second])),
+    Timestamp = lists:flatten(io_lib:format("~B-~2..0B-~2..0BT~2..0B:~2..0B:~2..0BZ", [Year, Month, Day, Hour, Minute, Second])),
     Query = mochiweb_util:urlencode(Props),
     Body = "",
     if
