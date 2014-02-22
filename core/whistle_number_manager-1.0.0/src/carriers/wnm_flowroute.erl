@@ -127,7 +127,7 @@ make_numbers_request(Props) ->
                                    wh_util:to_lower_string(?FR_NUMBER_URL), "\n",
                                    Query, "\n"
                                   ]),
-    <<Signature:160/integer>> = crypto:hmac(sha, SecretKey, MessageString),
+    <<Signature:160/integer>> = crypto:sha_mac(SecretKey, MessageString),
     Headers = [{"Accept", "application/json"}
                ,{"User-Agent", ?WNM_USER_AGENT}
                ,{"X-Timestamp", Timestamp}
