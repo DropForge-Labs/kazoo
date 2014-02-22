@@ -43,7 +43,7 @@ find_numbers(<<NPA:3/binary>>, Quantity, _) ->
     case make_numbers_request(Props) of
         {'error', _}=E -> E;
         {'ok', JObj} ->
-            {Numbers} = wh_json:get_value(<<"tns">>, JObj)
+            {Numbers} = wh_json:get_value(<<"tns">>, JObj),
             Resp = [begin
                         {Num, {Details}} = Number,
                         {Num, Details}
@@ -78,7 +78,7 @@ find_numbers(Search, Quantity, _) ->
     case make_numbers_request(Props) of
         {'error', _}=E -> E;
         {'ok', JObj} ->
-            {Numbers} = wh_json:get_value(<<"tns">>, JObj)
+            {Numbers} = wh_json:get_value(<<"tns">>, JObj),
             Resp = [begin
                         {Num, {Details}} = Number,
                         {Num, Details}
