@@ -50,12 +50,22 @@ find_numbers(<<NPA:3/binary>>, Quantity, _) ->
             {'ok', wh_json:from_list(Resp)}
     end;
 find_numbers(Search, Quantity, _) ->
-    Npa = binary:part(Search, 0, (case size(Search) of L when L < 3 -> L; _ -> 3 end)),
-    Nxx = binary:part(Search, 3, (case size(Search) of L when L < 3 -> L; _ -> 3 end)),
-    Props = [{"npa", wh_util:to_list(Npa)}
-             ,{"nxx", wh_util:to_list(Nxx)}
-             ,{"limit", wh_util:to_list(Quantity)}
-            ],
+    NpaNxx = binary:part(Search, 0, (case size(Search) of L when L < 6 -> L; _ -> 6 end)),
+    case size(NpaNxx) of
+      L when L <= 3 ->
+        Npa = binary:part(NpaNxx, 0, L),
+        Props = [{"npa", wh_util:to_list(Npa)}
+                  ,{"limit", wh_util:to_list(Quantity)}
+                 ],
+      L when L > 3 ->
+        Npa = binary:part(NpaNxx, 0, 3),
+        Nxx = binary:part(NpaNxx, 3, L),
+        Props = [{"npa", wh_util:to_list(Npa)}
+                  ,{"nxx", wh_util:to_list(Nxx)}
+                  ,{"limit", wh_util:to_list(Quantity)}
+                 ],
+    end,
+
     case make_numbers_request(get, Props) of
             {'error', _}=E -> E;
             {'ok', JObj} ->
