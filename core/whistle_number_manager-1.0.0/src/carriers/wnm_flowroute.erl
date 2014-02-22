@@ -139,7 +139,7 @@ make_numbers_request(Props) ->
                    ,{connect_timeout, 180000}
                   ],
     ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
-                                      ,io_lib:format("Request:~n~s ~s~n~s~n", [get, ?FR_NUMBER_URL, Body])),
+                                      ,io_lib:format("Request:~n~s ~s~n~s~n~n~s", [get, ?FR_NUMBER_URL, Body, MessageString])),
     case ibrowse:send_req(URL, Headers, Method, Body, HTTPOptions, 180000) of
         {ok, "401", _, _Response} ->
             ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
