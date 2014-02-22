@@ -101,14 +101,14 @@ make_numbers_request(Props) ->
     Timestamp = lists:flatten([wh_util:to_list(Year), "-", wh_util:to_list(Month), "-", wh_util:to_list(Day),
                               "T", wh_util:to_list(Hour), ":", wh_util:to_list(Minute), ":", wh_util:to_list(Second), "Z"]),
     Body = "",
-    BodyMD5 = erlang:md5(Body),
+    BodyMD5 = wh_util:binary_md5(Body),
     Query = mochiweb_util:urlencode(Props),
     URL = lists:flatten([?FR_NUMBER_URL, "?", Query]),
     MessageString = lists:flatten([Timestamp, "\n",
                                    "GET\n",
                                    wh_util:to_lower_string(BodyMD5), "\n",
                                    wh_util:to_lower_string(?FR_NUMBER_URL), "\n",
-                                   Query, "\n",
+                                   Query, "\n"
                                   ]),
     <<Signature:160/integer>> = crypto:hmac(sha, SecretKey, MessageString),
     Headers = [{"Accept", "application/json"}
