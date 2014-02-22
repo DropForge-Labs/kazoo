@@ -135,8 +135,7 @@ make_numbers_request(Props) ->
     Method = get,
     Headers = [{"Accept", "application/json"}
                ,{"User-Agent", ?WNM_USER_AGENT}
-               ,{"X-Timestamp", Timestamp}
-               ,{"Content-Type", "application/json"}],
+               ,{"X-Timestamp", Timestamp}],
     HTTPOptions = [{ssl,[{verify,0}]}
                    ,{basic_auth, {TechPrefix, wh_util:to_hex(Signature)}}
                    ,{inactivity_timeout, 180000}
