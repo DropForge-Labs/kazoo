@@ -43,46 +43,48 @@ find_numbers(<<NPA:3/binary>>, Quantity, _) ->
     case make_numbers_request(Props) of
         {'error', _}=E -> E;
         {'ok', JObj} ->
+            {Numbers} = wh_json:get_value(<<"tns">>, JObj)
             Resp = [begin
                         {Num, {Details}} = Number,
                         {Num, Details}
                     end
-                    || Number <- {Numbers} = wh_json:get_value(<<"tns">>, JObj)],
+                    || Number <- Numbers],
             {'ok', wh_json:from_list(Resp)}
     end;
 find_numbers(Search, Quantity, _) ->
     NpaNxx = binary:part(Search, 0, (case size(Search) of L when L < 6 -> L; _ -> 6 end)),
     case size(NpaNxx) of
-      Len when Len =< 3 ->
-        Npa = binary:part(NpaNxx, 0, size(NpaNxx)),
-        Props = [{"limit", wh_util:to_list(Quantity)}
-                  ,{"npa", wh_util:to_list(Npa)}
-                 ];
-      Len when Len > 3  andalso Len =< 6 ->
-        Npa = binary:part(NpaNxx, 0, 3),
-        Nxx = binary:part(NpaNxx, 3, size(NpaNxx)),
-        Props = [{"limit", wh_util:to_list(Quantity)}
-                  ,{"npa", wh_util:to_list(Npa)}
-                  ,{"nxx", wh_util:to_list(Nxx)}
-                 ];
-       _ ->
-         Npa = binary:part(NpaNxx, 0, 3),
-         Nxx = binary:part(NpaNxx, 3, 6),
-         Props = [{"limit", wh_util:to_list(Quantity)}
-                   ,{"npa", wh_util:to_list(Npa)}
-                   ,{"nxx", wh_util:to_list(Nxx)}
-                  ]
+        Len when Len =< 3 ->
+            Npa = binary:part(NpaNxx, 0, size(NpaNxx)),
+            Props = [{"limit", wh_util:to_list(Quantity)}
+                      ,{"npa", wh_util:to_list(Npa)}
+                     ];
+        Len when Len > 3  andalso Len =< 6 ->
+            Npa = binary:part(NpaNxx, 0, 3),
+            Nxx = binary:part(NpaNxx, 3, size(NpaNxx)),
+            Props = [{"limit", wh_util:to_list(Quantity)}
+                    ,{"npa", wh_util:to_list(Npa)}
+                    ,{"nxx", wh_util:to_list(Nxx)}
+                   ];
+        _ ->
+            Npa = binary:part(NpaNxx, 0, 3),
+            Nxx = binary:part(NpaNxx, 3, 6),
+            Props = [{"limit", wh_util:to_list(Quantity)}
+                     ,{"npa", wh_util:to_list(Npa)}
+                     ,{"nxx", wh_util:to_list(Nxx)}
+                    ]
     end,
 
     case make_numbers_request(Props) of
-            {'error', _}=E -> E;
-            {'ok', JObj} ->
-                    Resp = [begin
+        {'error', _}=E -> E;
+        {'ok', JObj} ->
+            {Numbers} = wh_json:get_value(<<"tns">>, JObj)
+            Resp = [begin
                         {Num, {Details}} = Number,
                         {Num, Details}
                     end
-                    || Number <- {Numbers} = wh_json:get_value(<<"tns">>, JObj)],
-                {'ok', wh_json:from_list(Resp)}
+                    || Number <- Numbers],
+            {'ok', wh_json:from_list(Resp)}
     end.
 
 %%--------------------------------------------------------------------
