@@ -44,10 +44,10 @@ find_numbers(<<NPA:3/binary>>, Quantity, _) ->
         {'error', _}=E -> E;
         {'ok', JObj} ->
             Resp = [begin
-                        [Num] = wh_json:get_keys(Number),
-                        {Num, Number}
+                        {Num, {Details}} = Number,
+                        {Num, Details}
                     end
-                    || Number <- wh_json:get_value(<<"tns">>, JObj)],
+                    || Number <- {Numbers} = wh_json:get_value(<<"tns">>, JObj)],
             {'ok', wh_json:from_list(Resp)}
     end;
 find_numbers(Search, Quantity, _) ->
@@ -77,11 +77,11 @@ find_numbers(Search, Quantity, _) ->
     case make_numbers_request(Props) of
             {'error', _}=E -> E;
             {'ok', JObj} ->
-                Resp = [begin
-                            [Num] = wh_json:get_keys(Number),
-                            {Num, Number}
-                        end
-                        || Number <- wh_json:get_value(<<"tns">>, JObj)],
+                    Resp = [begin
+                        {Num, {Details}} = Number,
+                        {Num, Details}
+                    end
+                    || Number <- {Numbers} = wh_json:get_value(<<"tns">>, JObj)],
                 {'ok', wh_json:from_list(Resp)}
     end.
 
