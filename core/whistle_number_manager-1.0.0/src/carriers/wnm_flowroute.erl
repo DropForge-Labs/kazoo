@@ -119,7 +119,12 @@ make_numbers_request(Props) ->
                               "T", wh_util:to_list(Hour), ":", wh_util:to_list(Minute), ":", wh_util:to_list(Second), "Z"]),
     Query = mochiweb_util:urlencode(Props),
     Body = "",
-    BodyMD5 = wh_util:binary_md5(Body),
+    if
+      length(Body) > 0 ->
+        BodyMD5 = wh_util:binary_md5(Body);
+      true ->
+        BodyMd5 = ""
+    end,
     MessageString = lists:flatten([Timestamp, "\n",
                                    "GET\n",
                                    wh_util:to_lower_string(BodyMD5), "\n",
