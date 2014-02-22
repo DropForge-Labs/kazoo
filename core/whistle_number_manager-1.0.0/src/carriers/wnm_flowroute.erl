@@ -39,7 +39,7 @@ find_numbers(<<"1", Rest/binary>>, Quantity, Opts) ->
 find_numbers(<<NPA:3/binary>>, Quantity, _) ->
     Props = [{"npa", wh_util:to_list(NPA)}
              ,{"limit", wh_util:to_list(Quantity)}],
-    case make_numbers_request(get, Props) of
+    case make_numbers_request(Props) of
         {'error', _}=E -> E;
         {'ok', JObj} ->
             Resp = [begin
@@ -73,7 +73,7 @@ find_numbers(Search, Quantity, _) ->
                   ]
     end,
 
-    case make_numbers_request(get, Props) of
+    case make_numbers_request(Props) of
             {'error', _}=E -> E;
             {'ok', JObj} ->
                 Resp = [begin
