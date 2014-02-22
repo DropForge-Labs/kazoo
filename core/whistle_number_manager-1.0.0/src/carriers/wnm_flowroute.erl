@@ -109,7 +109,7 @@ disconnect_number(Number) -> Number.
 %% given verb (purchase, search, provision, ect).
 %% @end
 %%--------------------------------------------------------------------
--spec make_numbers_request/2 :: (atom(), proplist()) -> {ok, term()} | {error, term()}.
+-spec make_numbers_request/1 :: (proplist()) -> {ok, term()} | {error, term()}.
 make_numbers_request(Props) ->
     lager:debug("making ~s request to flowroute.com ~s", ["GET", ?FR_NUMBER_URL]),
     TechPrefix = whapps_config:get_string(?WNM_FR_CONFIG_CAT, <<"tech_prefix">>, <<>>),
