@@ -53,13 +53,13 @@ find_numbers(Search, Quantity, _) ->
     NpaNxx = binary:part(Search, 0, (case size(Search) of L when L < 6 -> L; _ -> 6 end)),
     case size(NpaNxx) of
       L when L =< 3 ->
-        Npa = binary:part(NpaNxx, 0, L),
+        Npa = binary:part(NpaNxx, 0, size(NpaNxx)),
         Props = [{"npa", wh_util:to_list(Npa)}
                   ,{"limit", wh_util:to_list(Quantity)}
                  ];
       L when L > 3 ->
         Npa = binary:part(NpaNxx, 0, 3),
-        Nxx = binary:part(NpaNxx, 3, L),
+        Nxx = binary:part(NpaNxx, 3, (case size(NpaNxx) of L when L < 6 -> L; _ -> 6 end)),
         Props = [{"npa", wh_util:to_list(Npa)}
                   ,{"nxx", wh_util:to_list(Nxx)}
                   ,{"limit", wh_util:to_list(Quantity)}
