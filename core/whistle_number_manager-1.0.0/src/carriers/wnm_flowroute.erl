@@ -56,14 +56,14 @@ find_numbers(Search, Quantity, _) ->
         Npa = binary:part(NpaNxx, 0, L),
         Props = [{"npa", wh_util:to_list(Npa)}
                   ,{"limit", wh_util:to_list(Quantity)}
-                 ],
+                 ];
       L when L > 3 ->
         Npa = binary:part(NpaNxx, 0, 3),
         Nxx = binary:part(NpaNxx, 3, L),
         Props = [{"npa", wh_util:to_list(Npa)}
                   ,{"nxx", wh_util:to_list(Nxx)}
                   ,{"limit", wh_util:to_list(Quantity)}
-                 ],
+                 ]
     end,
 
     case make_numbers_request(get, Props) of
