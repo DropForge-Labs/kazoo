@@ -130,7 +130,8 @@ make_numbers_request(Props) ->
                                    wh_util:to_lower_string(?FR_NUMBER_URL), "\n",
                                    Query, "\n"
                                   ]),
-    <<Signature:160/integer>> = crypto:sha_mac(SecretKey, MessageString),
+    <<Hmac:160/integer>> = crypto:sha_mac(SecretKey, MessageString),
+    Signature = wh_util:to_binary(Hmac),
     URL = lists:flatten([?FR_NUMBER_URL, "?", Query]),
     Method = get,
     Headers = [{"Accept", "application/json"}
@@ -138,7 +139,7 @@ make_numbers_request(Props) ->
                ,{"X-Timestamp", Timestamp}
                ,{"Content-Type", "application/json"}],
     HTTPOptions = [{ssl,[{verify,0}]}
-                   ,{basic_auth, {TechPrefix, wh_util:to_lower_string(Signature)}}
+                   ,{basic_auth, {TechPrefix, Signature}}
                    ,{inactivity_timeout, 180000}
                    ,{connect_timeout, 180000}
                   ],
