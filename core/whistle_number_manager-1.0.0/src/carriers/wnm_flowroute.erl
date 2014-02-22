@@ -134,7 +134,7 @@ make_numbers_request(Props) ->
                ,{"X-Timestamp", Timestamp}
                ,{"Content-Type", "application/json"}],
     HTTPOptions = [{ssl,[{verify,0}]}
-                   ,{basic_auth, {TechPrefix, Signature}}
+                   ,{basic_auth, {TechPrefix, wh_util:to_binary(Signature)}}
                    ,{inactivity_timeout, 180000}
                    ,{connect_timeout, 180000}
                   ],
