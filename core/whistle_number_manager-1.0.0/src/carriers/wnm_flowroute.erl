@@ -68,7 +68,7 @@ find_numbers(Search, Quantity, _) ->
        _ ->
          Npa = binary:part(NpaNxx, 0, 3),
          Nxx = binary:part(NpaNxx, 3, 6),
-         Props = [{"limit", wh_util:to_list(Quantity)},
+         Props = [{"limit", wh_util:to_list(Quantity)}
                    ,{"npa", wh_util:to_list(Npa)}
                    ,{"nxx", wh_util:to_list(Nxx)}
                   ]
