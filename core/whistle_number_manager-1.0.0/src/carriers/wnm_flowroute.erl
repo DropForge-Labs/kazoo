@@ -123,7 +123,7 @@ make_numbers_request(Props) ->
       length(Body) > 0 ->
         BodyMD5 = wh_util:binary_md5(Body);
       true ->
-        BodyMd5 = ""
+        BodyMD5 = ""
     end,
     MessageString = lists:flatten([Timestamp, "\n",
                                    "GET\n",
