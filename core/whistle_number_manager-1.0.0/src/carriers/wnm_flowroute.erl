@@ -38,7 +38,7 @@ find_numbers(<<"1", Rest/binary>>, Quantity, Opts) ->
     find_numbers(Rest, Quantity, Opts);
 find_numbers(<<NPA:3/binary>>, Quantity, _) ->
     Props = [{"npa", wh_util:to_list(NPA)}
-             ,{"limit", wh_util:to_list(Quantity)}],
+             %,{"limit", wh_util:to_list(Quantity)}],
     case make_numbers_request(Props) of
         {'error', _}=E -> E;
         {'ok', JObj} ->
@@ -55,7 +55,7 @@ find_numbers(Search, Quantity, _) ->
       Len when Len =< 3 ->
         Npa = binary:part(NpaNxx, 0, size(NpaNxx)),
         Props = [{"npa", wh_util:to_list(Npa)}
-                  ,{"limit", wh_util:to_list(Quantity)}
+                  %,{"limit", wh_util:to_list(Quantity)}
                  ];
       Len when Len > 3  andalso Len =< 6 ->
         Npa = binary:part(NpaNxx, 0, 3),
