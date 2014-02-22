@@ -125,11 +125,11 @@ make_numbers_request(Props) ->
       true ->
         BodyMD5 = ""
     end,
-    MessageString = lists:flatten([Timestamp, "\n",
-                                   "GET\n",
-                                   wh_util:to_lower_string(BodyMD5), "\n",
-                                   wh_util:to_lower_string(?FR_NUMBER_URL), "\n",
-                                   Query, "\n"
+    MessageString = lists:flatten([Timestamp, $\n,
+                                   "GET", $\n,
+                                   wh_util:to_lower_string(BodyMD5), $\n,
+                                   wh_util:to_lower_string(?FR_NUMBER_URL), $\n,
+                                   Query
                                   ]),
     Utf8Bin = unicode:characters_to_binary(MessageString, unicode, utf8),
     <<Signature:20/binary>> = crypto:sha_mac(SecretKey, Utf8Bin),
