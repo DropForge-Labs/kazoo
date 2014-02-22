@@ -117,10 +117,9 @@ make_numbers_request(Props) ->
     {{Year, Month, Day}, {Hour, Minute, Second}} = calendar:now_to_universal_time(now()),
     Timestamp = lists:flatten([wh_util:to_list(Year), "-", wh_util:to_list(Month), "-", wh_util:to_list(Day),
                               "T", wh_util:to_list(Hour), ":", wh_util:to_list(Minute), ":", wh_util:to_list(Second), "Z"]),
+    Query = mochiweb_util:urlencode(Props),
     Body = "",
     BodyMD5 = wh_util:binary_md5(Body),
-    Query = mochiweb_util:urlencode(Props),
-    URL = lists:flatten([?FR_NUMBER_URL, "?", Query]),
     MessageString = lists:flatten([Timestamp, "\n",
                                    "GET\n",
                                    wh_util:to_lower_string(BodyMD5), "\n",
@@ -128,6 +127,8 @@ make_numbers_request(Props) ->
                                    Query, "\n"
                                   ]),
     <<Signature:160/integer>> = crypto:sha_mac(SecretKey, MessageString),
+    URL = lists:flatten([?FR_NUMBER_URL, "?", Query]),
+    Method = get,
     Headers = [{"Accept", "application/json"}
                ,{"User-Agent", ?WNM_USER_AGENT}
                ,{"X-Timestamp", Timestamp}
@@ -139,7 +140,7 @@ make_numbers_request(Props) ->
                   ],
     ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
                                       ,io_lib:format("Request:~n~s ~s~n~s~n", [get, ?FR_NUMBER_URL, Body])),
-    case ibrowse:send_req(URL, Headers, get, unicode:characters_to_binary(Body), HTTPOptions, 180000) of
+    case ibrowse:send_req(URL, Headers, Method, Body, HTTPOptions, 180000) of
         {ok, "401", _, _Response} ->
             ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
                                               ,io_lib:format("Response:~n401~n~s~n", [_Response])
