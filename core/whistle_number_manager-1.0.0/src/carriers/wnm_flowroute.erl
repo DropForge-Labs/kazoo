@@ -238,7 +238,7 @@ number_details_to_json(List) ->
                 ,{<<"ratecenter">>, proplists:get_value(<<"ratecenter">>, List)}
                 ,{<<"state">>, proplists:get_value(<<"state">>, List)}
                 ,{<<"flat_rate">>, proplists:get_value(<<"flat_rate">>, List)}
-            }
+            };
         false ->
             {}
     end.
