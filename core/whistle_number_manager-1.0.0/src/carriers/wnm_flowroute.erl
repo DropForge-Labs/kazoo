@@ -178,7 +178,7 @@ make_numbers_request(Props) ->
                                               ,[append]),
             lager:debug("flowroute.com request error: 503"),
             {error, server_error};
-        {ok, Code, _, [${|_]=Response} ->
+        {ok, Code, _, [${,$"|_]=Response} ->
             ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
                                               ,io_lib:format("Response:~n~p~n~s~n", [Code, Response])
                                               ,[append]),
@@ -213,7 +213,7 @@ make_numbers_request(Props) ->
                              {'ok', wh_json:object()} |
                              {'error', api_binary() | ne_binaries()}.
 verify_response(JObj) ->
-    case wh_json:get_value(<<"details">>, JObj) of
+    case wh_json:get_value(<<"error">>, JObj) of
         undefined ->
             lager:debug("request was successful"),
             {'ok', JObj};
