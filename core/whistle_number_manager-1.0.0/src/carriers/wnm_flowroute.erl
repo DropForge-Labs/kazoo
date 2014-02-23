@@ -230,11 +230,11 @@ verify_response(JObj) ->
 %%--------------------------------------------------------------------
 -spec number_details_to_json(list()) -> tuple().
 number_details_to_json(List) ->
-        {{<<"initial_cost">>, proplists:get_value(<<"initial_cost">>, Details)}
-            ,{<<"monthly_cost">>, proplists:get_value(<<"monthly_cost">>, Details)}
-            ,{<<"billing_methods">>, proplists:get_value(<<"billing_methods">>, Details)}
-            ,{<<"ratecenter">>, proplists:get_value(<<"ratecenter">>, Details)}
-            ,{<<"state">>, proplists:get_value(<<"state">>, Details)}
-            ,{<<"flat_rate">>, proplists:get_value(<<"flat_rate">>, Details)}
+        {{<<"initial_cost">>, proplists:get_value(<<"initial_cost">>, List)}
+            ,{<<"monthly_cost">>, proplists:get_value(<<"monthly_cost">>, List)}
+            ,{<<"billing_methods">>, proplists:get_value(<<"billing_methods">>, List)}
+            ,{<<"ratecenter">>, proplists:get_value(<<"ratecenter">>, List)}
+            ,{<<"state">>, proplists:get_value(<<"state">>, List)}
+            ,{<<"flat_rate">>, proplists:get_value(<<"flat_rate">>, List)}
         }
     end.
