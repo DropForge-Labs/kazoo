@@ -236,5 +236,5 @@ number_details_to_json(List) ->
         RateCenter = proplists:get_value(<<"ratecenter">>, List),
         State = proplists:get_value(<<"state">>, List),
         FlatRate = proplists:get_value(<<"flat_rate">>, List),
-        {InitialCost, MonthlyCost, BillingMethods, RateCenter, State, FlatRate}
+        Output = {InitialCost, MonthlyCost, BillingMethods, RateCenter, State, FlatRate}
     end.
