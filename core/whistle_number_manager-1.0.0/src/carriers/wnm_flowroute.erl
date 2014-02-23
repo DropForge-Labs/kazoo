@@ -46,7 +46,7 @@ find_numbers(<<NPA:3/binary>>, Quantity, _) ->
             {Numbers} = wh_json:get_value(<<"tns">>, JObj),
             Resp = [begin
                         {Num, {Details}} = Number,
-                        {Num, ejson:encode(Details)}
+                        {Num, number_details_to_json(Details)}
                     end
                     || Number <- Numbers],
             {'ok', wh_json:from_list(Resp)}
@@ -81,7 +81,7 @@ find_numbers(Search, Quantity, _) ->
             {Numbers} = wh_json:get_value(<<"tns">>, JObj),
             Resp = [begin
                         {Num, {Details}} = Number,
-                        {Num, ejson:encode(Details)}
+                        {Num, number_details_to_json(Details)}
                     end
                     || Number <- Numbers],
             {'ok', wh_json:from_list(Resp)}
@@ -220,4 +220,21 @@ verify_response(JObj) ->
         _ ->
             lager:debug("request failed"),
             {'error', JObj}
+    end.
+
+%%--------------------------------------------------------------------
+%% @private
+%% @doc
+%% Format the Number details as a Json Object.
+%% @end
+%%--------------------------------------------------------------------
+-spec number_details_to_json(list(tuple())) -> tuple().
+number_details_to_json(List) ->
+    InitialCost = proplists:get_value(<<"initial_cost">>, List),
+    MonthlyCost = proplists:get_value(<<"monthly_cost">>, List),
+    BillingMethods = proplists:get_value(<<"billing_methods">>, List),
+    RateCenter = proplists:get_value(<<"ratecenter">>, List),
+    State = proplists:get_value(<<"state">>, List),
+    FlatRate = proplists:get_value(<<"flat_rate">>, List),
+    {InitialCost, MonthlyCost, BillingMethods, RateCenter, State, FlatRate}.
     end.
