@@ -46,7 +46,7 @@ find_numbers(<<NPA:3/binary>>, Quantity, _) ->
             {Numbers} = wh_json:get_value(<<"tns">>, JObj),
             Resp = [begin
                         {Num, {Details}} = Number,
-                        {Num, number_details_to_json(Details)}
+                        {Num, {}}
                     end
                     || Number <- Numbers],
             {'ok', wh_json:from_list(Resp)}
@@ -81,7 +81,7 @@ find_numbers(Search, Quantity, _) ->
             {Numbers} = wh_json:get_value(<<"tns">>, JObj),
             Resp = [begin
                         {Num, {Details}} = Number,
-                        {Num, number_details_to_json(Details)}
+                        {Num, {}}
                     end
                     || Number <- Numbers],
             {'ok', wh_json:from_list(Resp)}
@@ -228,8 +228,8 @@ verify_response(JObj) ->
 %% Format the Number details as a Json Object.
 %% @end
 %%--------------------------------------------------------------------
--spec number_details_to_json(list()) -> tuple().
-number_details_to_json(List) ->
+-spec number_details_to_tuple(list()) -> tuple().
+number_details_to_tuple(List) ->
     case is_list(List) of
         true ->
             {{<<"initial_cost">>, proplists:get_value(<<"initial_cost">>, List)}
