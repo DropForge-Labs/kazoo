@@ -61,14 +61,14 @@ find_numbers(Search, Quantity, _) ->
                      ];
         Len when Len > 3  andalso Len =< 6 ->
             Npa = binary:part(NpaNxx, 0, 3),
-            Nxx = binary:part(NpaNxx, 3, size(NpaNxx)),
+            Nxx = binary:part(NpaNxx, 3, size(NpaNxx) - 3),
             Props = [{"limit", wh_util:to_list(Quantity)}
                     ,{"npa", wh_util:to_list(Npa)}
                     ,{"nxx", wh_util:to_list(Nxx)}
                    ];
         _ ->
             Npa = binary:part(NpaNxx, 0, 3),
-            Nxx = binary:part(NpaNxx, 3, 6),
+            Nxx = binary:part(NpaNxx, 3, 3),
             Props = [{"limit", wh_util:to_list(Quantity)}
                      ,{"npa", wh_util:to_list(Npa)}
                      ,{"nxx", wh_util:to_list(Nxx)}
