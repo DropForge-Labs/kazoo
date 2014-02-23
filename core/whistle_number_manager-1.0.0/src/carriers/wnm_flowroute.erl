@@ -228,7 +228,7 @@ verify_response(JObj) ->
 %% Format the Number details as a Json Object.
 %% @end
 %%--------------------------------------------------------------------
--spec number_details_to_json(list(tuple())) -> tuple().
+-spec number_details_to_json(list()) -> tuple().
 number_details_to_json(List) ->
         {{<<"initial_cost">>, proplists:get_value(<<"initial_cost">>, Details)}
             ,{<<"monthly_cost">>, proplists:get_value(<<"monthly_cost">>, Details)}
