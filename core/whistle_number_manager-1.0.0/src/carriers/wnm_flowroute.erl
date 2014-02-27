@@ -135,8 +135,9 @@ make_numbers_request(Method, Path, Body, Props) ->
             URL = lists:flatten([?FR_NUMBER_URL, Path])
     end,
     URI = lists:flatten([?FR_NUMBER_URL, Path]),
+    ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
+                                      ,io_lib:format("Request:~n~s ~s~n~s~n", [Method, URL, Body])),
     Signature = compute_signature(Timestamp, Method, Body, URI, Query),
-
     Headers = [{"Accept", "application/json"}
                ,{"User-Agent", ?WNM_USER_AGENT}
                ,{"X-Timestamp", Timestamp}],
@@ -145,8 +146,6 @@ make_numbers_request(Method, Path, Body, Props) ->
                    ,{inactivity_timeout, 180000}
                    ,{connect_timeout, 180000}
                   ],
-    ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
-                                      ,io_lib:format("Request:~n~s ~s~n~s~n", [Method, URL, Body])),
     case ibrowse:send_req(URL, Headers, Method, Body, HTTPOptions, 180000) of
         {ok, "401", _, _Response} ->
             ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
