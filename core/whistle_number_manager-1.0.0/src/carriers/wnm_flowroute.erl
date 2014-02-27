@@ -50,7 +50,8 @@ find_numbers(<<NPA:3/binary>>, Quantity, _) ->
     Props = [{"limit", wh_util:to_list(Quantity)}
              ,{"npa", wh_util:to_list(NPA)}
             ],
-    case make_numbers_request(get, ?FR_AVAILABLE_TNS_PATH, <<"">>, Props) of
+    Path = ?FR_AVAILABLE_TNS_PATH,
+    case make_numbers_request(get, Path, <<"">>, Props) of
         {'error', _}=E -> E;
         {'ok', JObj} ->
             {Numbers} = wh_json:get_value(<<"tns">>, JObj),
@@ -212,7 +213,7 @@ make_numbers_request(Method, Path, Body, Props) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec compute_signature(nonempty_string(), http_verb(), binary(), nonempty_string(), string()) -> binary().
-compute_signature(Timestamp, Method, Body, URI, Query)
+compute_signature(Timestamp, Method, Body, URI, Query) ->
     if
         Method == 'put' || Method == 'post' || Method == 'patch' || length(Body) > 0 ->
             BodyMD5 = wh_util:binary_md5(Body);
