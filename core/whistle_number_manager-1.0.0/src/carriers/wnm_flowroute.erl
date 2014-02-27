@@ -22,11 +22,11 @@
 
 -define(FR_AVAILABLE_TNS_PATH, whapps_config:get_string(?WNM_FR_CONFIG_CAT
                                                    ,<<"numbers_available_tns_path">>
-                                                   ,<<"/v1/available-tns/tns/")).
+                                                   ,<<"/v1/available-tns/tns/">>)).
 
 -define(FR_PURCHASE_TNS_PATH, whapps_config:get_string(?WNM_FR_CONFIG_CAT
                                                   ,<<"numbers_purchase_tns_path">>
-                                                  ,<<"/v1/tns/")).
+                                                  ,<<"/v1/tns/">>)).
 
 -define(FR_DEBUG, whapps_config:get_is_true(?WNM_FR_CONFIG_CAT, <<"debug">>, 'false')).
 
@@ -50,8 +50,7 @@ find_numbers(<<NPA:3/binary>>, Quantity, _) ->
     Props = [{"limit", wh_util:to_list(Quantity)}
              ,{"npa", wh_util:to_list(NPA)}
             ],
-    Body = <<"">>,
-    case make_numbers_request(get, ?FR_AVAILABLE_TNS_PATH, Body, Props) of
+    case make_numbers_request(get, ?FR_AVAILABLE_TNS_PATH, <<"">>, Props) of
         {'error', _}=E -> E;
         {'ok', JObj} ->
             {Numbers} = wh_json:get_value(<<"tns">>, JObj),
@@ -85,9 +84,7 @@ find_numbers(Search, Quantity, _) ->
                      ,{"nxx", wh_util:to_list(Nxx)}
                     ]
     end,
-
-    Body = <<"">>,
-    case make_numbers_request(get, ?FR_AVAILABLE_TNS_PATH, Body, Props) of
+    case make_numbers_request(get, ?FR_AVAILABLE_TNS_PATH, <<"">>, Props) of
         {'error', _}=E -> E;
         {'ok', JObj} ->
             {Numbers} = wh_json:get_value(<<"tns">>, JObj),
