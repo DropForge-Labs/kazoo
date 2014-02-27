@@ -219,7 +219,7 @@ compute_signature(Timestamp, Method, Body, URI, Query) ->
             BodyMD5 = <<"">>
     end,
     MessageString = lists:flatten([Timestamp, $\n,
-                                       Method, $\n,
+                                       wh_util:to_upper_string(Method), $\n,
                                        wh_util:to_lower_string(BodyMD5), $\n,
                                        wh_util:to_lower_string(URI), $\n,
                                        Query
