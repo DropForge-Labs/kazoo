@@ -132,7 +132,7 @@ make_numbers_request(Method, Path, Body, Props) ->
     Query = mochiweb_util:urlencode(Props),
     if
         length(Query) > 0 ->
-            URL = lists:flatten([?FR_NUMBER_URL, Path, "?", Query]),
+            URL = lists:flatten([?FR_NUMBER_URL, Path, "?", Query]);
         true ->
             URL = lists:flatten([?FR_NUMBER_URL, Path])
     end,
