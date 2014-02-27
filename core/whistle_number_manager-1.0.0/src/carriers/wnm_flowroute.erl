@@ -50,8 +50,8 @@ find_numbers(<<NPA:3/binary>>, Quantity, _) ->
     Props = [{"limit", wh_util:to_list(Quantity)}
              ,{"npa", wh_util:to_list(NPA)}
             ],
-    Path = ?FR_AVAILABLE_TNS_PATH,
-    case make_numbers_request(get, Path, <<"">>, Props) of
+    Body = <"">,
+    case make_numbers_request(get, ?FR_AVAILABLE_TNS_PATH, Body, Props) of
         {'error', _}=E -> E;
         {'ok', JObj} ->
             {Numbers} = wh_json:get_value(<<"tns">>, JObj),
@@ -85,8 +85,8 @@ find_numbers(Search, Quantity, _) ->
                      ,{"nxx", wh_util:to_list(Nxx)}
                     ]
     end,
-
-    case make_numbers_request(get, ?FR_AVAILABLE_TNS_PATH, <<"">>, Props) of
+    Body = <"">,
+    case make_numbers_request(get, ?FR_AVAILABLE_TNS_PATH, Body, Props) of
         {'error', _}=E -> E;
         {'ok', JObj} ->
             {Numbers} = wh_json:get_value(<<"tns">>, JObj),
