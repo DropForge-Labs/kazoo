@@ -125,7 +125,6 @@ disconnect_number(Number) -> Number.
 make_numbers_request(Method, Path, Body, Props) ->
     lager:debug("making ~s request to flowroute.com ~s", [Method, ?FR_NUMBER_URL]),
     TechPrefix = whapps_config:get_string(?WNM_FR_CONFIG_CAT, <<"tech_prefix">>, <<>>),
-    SecretKey = whapps_config:get_string(?WNM_FR_CONFIG_CAT, <<"secret_key">>, <<>>),
     {{Year, Month, Day}, {Hour, Minute, Second}} = calendar:now_to_universal_time(now()),
     Timestamp = lists:flatten(io_lib:format("~B-~2..0B-~2..0BT~2..0B:~2..0B:~2..0B", [Year, Month, Day, Hour, Minute, Second])),
     Query = mochiweb_util:urlencode(Props),
@@ -212,6 +211,7 @@ make_numbers_request(Method, Path, Body, Props) ->
 %%--------------------------------------------------------------------
 -spec compute_signature(nonempty_string(), http_verb(), binary(), nonempty_string(), string()) -> binary().
 compute_signature(Timestamp, Method, Body, URI, Query) ->
+    SecretKey = whapps_config:get_string(?WNM_FR_CONFIG_CAT, <<"secret_key">>, <<>>),
     if
         Method == 'put' orelse Method == 'post' orelse Method == 'patch' orelse length(Body) > 0 ->
             BodyMD5 = wh_util:binary_md5(Body);
