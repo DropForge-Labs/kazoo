@@ -213,7 +213,7 @@ make_numbers_request(Method, Path, Body, Props) ->
 -spec compute_signature(nonempty_string(), http_verb(), binary(), nonempty_string(), string()) -> binary().
 compute_signature(Timestamp, Method, Body, URI, Query) ->
     if
-        Method == 'put' | Method == 'post' | Method == 'patch' | length(Body) > 0 ->
+        Method == 'put' orelse Method == 'post' orelse Method == 'patch' orelse length(Body) > 0 ->
             BodyMD5 = wh_util:binary_md5(Body);
         true ->
             BodyMD5 = <<"">>
