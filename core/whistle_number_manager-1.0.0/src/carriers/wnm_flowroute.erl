@@ -121,7 +121,7 @@ acquire_number(#number{auth_by=AuthBy, assigned_to=AssignedTo, module_data=Data}
             ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com_purchase.xml"
                                                ,io_lib:format("Number:~n~p~n", [N])),
             Body = [{<<"billing_method">>, <<"METERED">>}],
-            Props = [],
+            Props = []
 %            case make_numbers_request(put, concat(?FR_PURCHASE_TNS_PATH, N.number), Body, Props) of
 %                {'error', Reason} ->
 %                    Error = <<"Unable to acquire number: ", (wh_util:to_binary(Reason))/binary>>,
