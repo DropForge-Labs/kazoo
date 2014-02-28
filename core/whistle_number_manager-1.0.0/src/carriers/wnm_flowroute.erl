@@ -154,6 +154,7 @@ acquire_number(#number{auth_by=AuthBy, assigned_to=AssignedTo, module_data=Data}
                             wnm_number:error_carrier_fault(Error, N);
                         {'ok', JsonRoutes} ->
                             N#number{module_data=number_order_response_to_json(JsonAcquire)}
+                    end
             end
     end.
 
