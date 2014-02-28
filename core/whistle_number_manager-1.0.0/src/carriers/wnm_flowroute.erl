@@ -221,7 +221,7 @@ make_numbers_request(Method, Path, BinBody, Props) ->
 compute_signature(Timestamp, Method, Body, URI, Query) ->
     SecretKey = whapps_config:get_string(?WNM_FR_CONFIG_CAT, <<"secret_key">>, <<>>),
     if
-        Method == 'put' orelse Method == 'post' orelse Method == 'patch' orelse Body /= <<"">> ->
+        Method == 'put' orelse Method == 'post' orelse Method == 'patch' orelse length(Body) > 0 ->
             BodyMD5 = wh_util:binary_md5(Body);
         true ->
             BodyMD5 = <<"">>
