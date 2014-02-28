@@ -124,6 +124,9 @@ acquire_number(#number{}=N) ->
             Props = [],
             case make_numbers_request(put, lists:concat(?FR_PURCHASE_TNS_PATH, N#number.number), Body, Props) of
                 {'error', Reason} ->
+                    ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com_purchase.xml"
+                                                       ,io_lib:format("Error:~n~p~n", [Reason])
+                                                       [append]),
                     Error = <<"Unable to acquire number: ", (wh_util:to_binary(Reason))/binary>>,
                     wnm_number:error_carrier_fault(Error, N);
                 {'ok', JObj} ->
@@ -150,6 +153,9 @@ acquire_number(#number{}=N) ->
                     RoutesBody = [{<<"routes">>, props:filter_undefined(RoutesList)}],
                     case make_numbers_request(patch, lists:concat(?FR_PURCHASE_TNS_PATH, N#number.number), RoutesBody, Props) of
                         {'error', Reason} ->
+                            ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com_purchase.xml"
+                                                               ,io_lib:format("Error:~n~p~n", [Reason])
+                                                               [append]),
                             Error = <<"Unable to acquire number: ", (wh_util:to_binary(Reason))/binary>>,
                             wnm_number:error_carrier_fault(Error, N);
                         {'ok', _} ->
