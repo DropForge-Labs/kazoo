@@ -108,7 +108,7 @@ find_numbers(Search, Quantity, _) ->
 %%--------------------------------------------------------------------
 -spec acquire_number/1 :: (wnm_number()) -> wnm_number().
 acquire_number(#number{dry_run='true'}=Number) -> Number;
-acquire_number(#number{auth_by=AuthBy, assigned_to=AssignedTo, module_data=Data}=N) ->
+acquire_number(#number{}=N) ->
     Debug = whapps_config:get_is_true(?WNM_FR_CONFIG_CAT, <<"sandbox_provisioning">>, true),
     case whapps_config:get_is_true(?WNM_FR_CONFIG_CAT, <<"enable_provisioning">>, true) of
         false when Debug ->
@@ -126,7 +126,7 @@ acquire_number(#number{auth_by=AuthBy, assigned_to=AssignedTo, module_data=Data}
                 {'error', Reason} ->
                     Error = <<"Unable to acquire number: ", (wh_util:to_binary(Reason))/binary>>,
                     wnm_number:error_carrier_fault(Error, N);
-                {'ok', JsonAcquire} ->
+                {'ok', JObj} ->
                     Routes = make_numbers_request(get, ?FR_RETRIEVE_ROUTES_PATH, <<"">>, []),
                     Hosts = case whapps_config:get(<<"number_manager.flowroute">>, <<"endpoints">>) of
                                 'undefined' -> [];
@@ -137,7 +137,7 @@ acquire_number(#number{auth_by=AuthBy, assigned_to=AssignedTo, module_data=Data}
                             end,
 
                     RoutesList = [begin
-                                     {Name, {[{<<"type">>, Type}, {<<"value">>, Value}]}} = Route,
+                                     {Name, {[{<<"type">>, _}, {<<"value">>, Value}]}} = Route,
                                      case lists:member(wh_util:to_lower_string(Value), Hosts) of
                                          true ->
                                              {<<"name">>, Name};
@@ -152,8 +152,8 @@ acquire_number(#number{auth_by=AuthBy, assigned_to=AssignedTo, module_data=Data}
                         {'error', Reason} ->
                             Error = <<"Unable to acquire number: ", (wh_util:to_binary(Reason))/binary>>,
                             wnm_number:error_carrier_fault(Error, N);
-                        {'ok', JsonRoutes} ->
-                            N#number{module_data=JsonAcquire}
+                        {'ok', _} ->
+                            N#number{module_data=JObj}
                     end
             end
     end.
@@ -295,7 +295,7 @@ compute_signature(Timestamp, Method, Body, URI, Query) ->
                                        ,io_lib:format("Message String: ~n~s~n~n", [MessageString])
                                        ,[append]),
     Utf8Bin = unicode:characters_to_binary(MessageString, unicode, utf8),
-    <<Signature:20/binary>> = crypto:sha_mac(SecretKey, Utf8Bin).
+    crypto:sha_mac(SecretKey, Utf8Bin).
 
 %%--------------------------------------------------------------------
 %% @private
