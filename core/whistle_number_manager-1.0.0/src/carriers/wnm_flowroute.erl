@@ -138,7 +138,7 @@ make_numbers_request(Method, Path, BinBody, Props) ->
         BinBody == <<"">> ->
             Body = "";
         true ->
-            Body = wh_json:encode(Body)
+            Body = wh_json:encode(BinBody)
     end,
     URI = lists:flatten([?FR_NUMBER_URL, Path]),
     ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
