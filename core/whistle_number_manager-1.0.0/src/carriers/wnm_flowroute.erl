@@ -251,6 +251,32 @@ make_numbers_request(Method, Path, BinBody, Props) ->
                                               ,[append]),
             lager:debug("flowroute.com request error: 503"),
             {error, server_error};
+        {ok, "201", _, _Response} ->
+            ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
+                                              ,io_lib:format("Response:~n201~n~s~n", [_Response])
+                                              ,[append]),
+            lager:debug("received response from flowroute.com"),
+            try
+                JObj = ejson:decode("{}"),
+                verify_response(JObj)
+            catch
+                _:R ->
+                    lager:debug("failed to decode json: ~p", [R]),
+                    {error, empty_response}
+            end;
+        {ok, "204", _, _Response} ->
+            ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
+                                              ,io_lib:format("Response:~n204~n~s~n", [_Response])
+                                              ,[append]),
+            lager:debug("received response from flowroute.com"),
+            try
+                JObj = ejson:decode("{}"),
+                verify_response(JObj)
+            catch
+                _:R ->
+                    lager:debug("failed to decode json: ~p", [R]),
+                    {error, empty_response}
+            end;
         {ok, Code, _, [${,$"|_]=Response} ->
             ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
                                               ,io_lib:format("Response:~n~p~n~s~n", [Code, Response])
