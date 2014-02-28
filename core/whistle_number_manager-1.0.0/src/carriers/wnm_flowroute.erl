@@ -148,7 +148,7 @@ acquire_number(#number{auth_by=AuthBy, assigned_to=AssignedTo, module_data=Data}
                                  || Route <- Routes],
 
                     RoutesBody = [{<<"routes">>, props:filter_undefined(RoutesList)}],
-                    case make_numbers_request(patch, concat(?FR_PURCHASE_TNS_PATH, #N.number), RoutesBody, Props) of
+                    case make_numbers_request(patch, concat(?FR_PURCHASE_TNS_PATH, N.number), RoutesBody, Props) of
                         {'error', Reason} ->
                             Error = <<"Unable to acquire number: ", (wh_util:to_binary(Reason))/binary>>,
                             wnm_number:error_carrier_fault(Error, N);
