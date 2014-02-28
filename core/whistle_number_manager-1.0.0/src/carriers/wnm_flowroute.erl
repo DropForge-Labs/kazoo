@@ -118,7 +118,7 @@ acquire_number(#number{}=N) ->
             Error = <<"Unable to acquire numbers on this system, carrier provisioning is disabled">>,
             wnm_number:error_carrier_fault(Error, N);
         'true' ->
-            Body = {[{<<"billing_method">>, <<"METERED">>}]},
+            Body = wh_json:encode({[{<<"billing_method">>, <<"METERED">>}]}),
             Props = [],
             case make_numbers_request(put, lists:flatten([?FR_PURCHASE_TNS_PATH, N#number.number]), Body, Props) of
                 {'error', Reason} ->
