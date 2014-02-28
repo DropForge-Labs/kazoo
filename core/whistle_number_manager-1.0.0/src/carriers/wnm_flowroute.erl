@@ -126,7 +126,7 @@ make_numbers_request(Method, Path, BinBody, Props) ->
     lager:debug("making ~s request to flowroute.com ~s", [Method, ?FR_NUMBER_URL]),
     TechPrefix = whapps_config:get_string(?WNM_FR_CONFIG_CAT, <<"tech_prefix">>, <<>>),
     {{Year, Month, Day}, {Hour, Minute, Second}} = calendar:now_to_universal_time(now()),
-    Timestamp = lists:flatten(io_lib:format("~B-~2..0B-~2..0BT~2..0B:~2..0B:~2..0B", [Year, Month, Day, Hour, Minute, Second])),
+    Timestamp = lists:flatten(io_lib:format("~B-~2..0B-~2..0BT~2..0B:~2..0B:~2..0BZ", [Year, Month, Day, Hour, Minute, Second])),
     Query = mochiweb_util:urlencode(Props),
     if
         length(Query) > 0 ->
@@ -152,7 +152,7 @@ make_numbers_request(Method, Path, BinBody, Props) ->
                    ,{inactivity_timeout, 180000}
                    ,{connect_timeout, 180000}
                   ],
-  ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
+    ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
                                      ,io_lib:format("Signature: ~s~n~n", [wh_util:to_hex(Signature)])
                                      ,[append]),
     case ibrowse:send_req(URL, Headers, Method, Body, HTTPOptions, 180000) of
