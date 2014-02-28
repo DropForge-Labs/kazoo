@@ -122,7 +122,7 @@ disconnect_number(Number) -> Number.
 %% @end
 %%--------------------------------------------------------------------
 -spec make_numbers_request/4 :: (http_verb(), nonempty_string(), binary(), wh_proplist()) -> {ok, term()} | {error, term()}.
-make_numbers_request(Method, Path, Body, Props) ->
+make_numbers_request(Method, Path, BinBody, Props) ->
     lager:debug("making ~s request to flowroute.com ~s", [Method, ?FR_NUMBER_URL]),
     TechPrefix = whapps_config:get_string(?WNM_FR_CONFIG_CAT, <<"tech_prefix">>, <<>>),
     {{Year, Month, Day}, {Hour, Minute, Second}} = calendar:now_to_universal_time(now()),
@@ -138,10 +138,10 @@ make_numbers_request(Method, Path, Body, Props) ->
     ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
                                       ,io_lib:format("Request:~n~s ~s~n~s~n", [Method, URL, Body])),
     if
-        Body == <<"">> ->
+        BinBody == <<"">> ->
             Body = "";
         true ->
-            wh_json:encode(Body)
+            Body = wh_json:encode(Body)
     end,
     Signature = compute_signature(Timestamp, Method, Body, URI, Query),
     Headers = [{"Accept", "application/json"}
