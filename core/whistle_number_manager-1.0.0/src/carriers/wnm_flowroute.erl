@@ -28,6 +28,10 @@
                                                   ,<<"numbers_purchase_tns_path">>
                                                   ,<<"/v1/tns/">>)).
 
+-define(FR_RETRIEVE_ROUTES_PATH, whapps_config:get_string(?WNM_FR_CONFIG_CAT
+                                                  ,<<"numbers_retrieve_routes_path">>
+                                                  ,<<"/v1/routes/">>)).
+
 -define(FR_DEBUG, whapps_config:get_is_true(?WNM_FR_CONFIG_CAT, <<"debug">>, 'false')).
 
 -type http_verb() :: 'put' | 'post' | 'patch' | 'get' | 'delete'.
@@ -103,7 +107,55 @@ find_numbers(Search, Quantity, _) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec acquire_number/1 :: (wnm_number()) -> wnm_number().
-acquire_number(Number) -> Number.
+acquire_number(#number{dry_run='true'}=Number) -> Number;
+acquire_number(#number{auth_by=AuthBy, assigned_to=AssignedTo, module_data=Data}=N) ->
+    Debug = whapps_config:get_is_true(?WNM_FR_CONFIG_CAT, <<"sandbox_provisioning">>, true),
+    case whapps_config:get_is_true(?WNM_FR_CONFIG_CAT, <<"enable_provisioning">>, true) of
+        false when Debug ->
+            lager:debug("allowing sandbox provisioning", []),
+            N;
+        'false' ->
+            Error = <<"Unable to acquire numbers on this system, carrier provisioning is disabled">>,
+            wnm_number:error_carrier_fault(Error, N);
+        'true' ->
+            ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com_purchase.xml"
+                                               ,io_lib:format("Request:~n~p~n", [N#number])),
+            Body = [{<<"billing_method">>, <<"METERED">>}],
+            Props = [],
+            case make_numbers_request(put, concat(?FR_PURCHASE_TNS_PATH, Number), Body, Props) of
+                {'error', Reason} ->
+                    Error = <<"Unable to acquire number: ", (wh_util:to_binary(Reason))/binary>>,
+                    wnm_number:error_carrier_fault(Error, N);
+                {'ok', JsonAcquire} ->
+                    Routes = make_numbers_request(get, ?FR_RETRIEVE_ROUTES_PATH, <<"">>, []),
+                    Hosts = case whapps_config:get(<<"number_manager.flowroute">>, <<"endpoints">>) of
+                                'undefined' -> [];
+                                Endpoint when is_binary(Endpoint) ->
+                                    [wh_util:to_list(Endpoint)];
+                                Endpoints ->
+                                    [wh_util:to_list(E) || E <- Endpoints]
+                            end,
+
+                    RoutesList = [begin
+                                     {Name, {[{<<"type">>, Type}, {<<"value">>, Value}]}} = Route,
+                                     case lists:member(wh_util:to_lower_string(Value), Hosts) of
+                                         true ->
+                                             {<<"name">>, Name};
+                                         false ->
+                                             undefined
+                                     end
+                                 end
+                                 || Route <- Routes],
+
+                    RoutesBody = [{<<"routes">>, props:filter_undefined(RoutesList)}],
+                    case make_numbers_request(patch, concat(?FR_PURCHASE_TNS_PATH, Number), RoutesBody, Props) of
+                        {'error', Reason} ->
+                            Error = <<"Unable to acquire number: ", (wh_util:to_binary(Reason))/binary>>,
+                            wnm_number:error_carrier_fault(Error, N);
+                        {'ok', JsonRoutes} ->
+                            N#number{module_data=number_order_response_to_json(JsonAcquire)}
+            end
+    end.
 
 %%--------------------------------------------------------------------
 %% @public
@@ -144,9 +196,15 @@ make_numbers_request(Method, Path, BinBody, Props) ->
     ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
                                       ,io_lib:format("Request:~n~s ~s~n~s~n", [Method, URL, Body])),
     Signature = compute_signature(Timestamp, Method, Body, URI, Query),
-    Headers = [{"Accept", "application/json"}
+    InitialHeaders = [{"Accept", "application/json"}
                ,{"User-Agent", ?WNM_USER_AGENT}
                ,{"X-Timestamp", Timestamp}],
+    if
+        length(Body) > 0 ->
+            Headers = lists:append(InitialHeaders, [{"Content-Type", "application/json"}]);
+        true ->
+            Headers = InitialHeaders
+    end,
     HTTPOptions = [{ssl,[{verify,0}]}
                    ,{basic_auth, {TechPrefix, wh_util:to_hex(Signature)}}
                    ,{inactivity_timeout, 180000}
