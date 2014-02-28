@@ -134,15 +134,15 @@ make_numbers_request(Method, Path, BinBody, Props) ->
         true ->
             URL = lists:flatten([?FR_NUMBER_URL, Path])
     end,
-    URI = lists:flatten([?FR_NUMBER_URL, Path]),
-    ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
-                                      ,io_lib:format("Request:~n~s ~s~n~s~n", [Method, URL, Body])),
     if
         BinBody == <<"">> ->
             Body = "";
         true ->
             Body = wh_json:encode(Body)
     end,
+    URI = lists:flatten([?FR_NUMBER_URL, Path]),
+    ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
+                                      ,io_lib:format("Request:~n~s ~s~n~s~n", [Method, URL, Body])),
     Signature = compute_signature(Timestamp, Method, Body, URI, Query),
     Headers = [{"Accept", "application/json"}
                ,{"User-Agent", ?WNM_USER_AGENT}
