@@ -118,9 +118,7 @@ acquire_number(#number{}=N) ->
             Error = <<"Unable to acquire numbers on this system, carrier provisioning is disabled">>,
             wnm_number:error_carrier_fault(Error, N);
         'true' ->
-            ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com_purchase.xml"
-                                               ,io_lib:format("Number:~n~p~n", [N])),
-            Body = [{<<"billing_method">>, <<"METERED">>}],
+            Body = {[{<<"billing_method">>, <<"METERED">>}]},
             Props = [],
             case make_numbers_request(put, lists:concat(?FR_PURCHASE_TNS_PATH, N#number.number), Body, Props) of
                 {'error', Reason} ->
