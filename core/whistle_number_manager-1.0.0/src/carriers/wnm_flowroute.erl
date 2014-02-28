@@ -120,7 +120,7 @@ acquire_number(#number{}=N) ->
         'true' ->
             Body = {[{<<"billing_method">>, <<"METERED">>}]},
             Props = [],
-            case make_numbers_request(put, lists:concat(?FR_PURCHASE_TNS_PATH, N#number.number), Body, Props) of
+            case make_numbers_request(put, lists:flatten([(?FR_PURCHASE_TNS_PATH, N#number.number]), Body, Props) of
                 {'error', Reason} ->
                     ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com_purchase.xml"
                                                        ,io_lib:format("Error:~n~p~n", [Reason])
@@ -149,7 +149,7 @@ acquire_number(#number{}=N) ->
                                  || Route <- Routes],
 
                     RoutesBody = [{<<"routes">>, props:filter_undefined(RoutesList)}],
-                    case make_numbers_request(patch, lists:concat(?FR_PURCHASE_TNS_PATH, N#number.number), RoutesBody, Props) of
+                    case make_numbers_request(patch, lists:flatten([(?FR_PURCHASE_TNS_PATH, N#number.number), RoutesBody, Props]) of
                         {'error', Reason} ->
                             ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com_purchase.xml"
                                                                ,io_lib:format("Error:~n~p~n", [Reason])
