@@ -126,7 +126,7 @@ acquire_number(#number{}=N) ->
                 {'error', Reason} ->
                     ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com_purchase.xml"
                                                        ,io_lib:format("Error:~n~p~n", [Reason])
-                                                       [append]),
+                                                       ,[append]),
                     Error = <<"Unable to acquire number: ", (wh_util:to_binary(Reason))/binary>>,
                     wnm_number:error_carrier_fault(Error, N);
                 {'ok', JObj} ->
@@ -155,7 +155,7 @@ acquire_number(#number{}=N) ->
                         {'error', Reason} ->
                             ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com_purchase.xml"
                                                                ,io_lib:format("Error:~n~p~n", [Reason])
-                                                               [append]),
+                                                               ,[append]),
                             Error = <<"Unable to acquire number: ", (wh_util:to_binary(Reason))/binary>>,
                             wnm_number:error_carrier_fault(Error, N);
                         {'ok', _} ->
