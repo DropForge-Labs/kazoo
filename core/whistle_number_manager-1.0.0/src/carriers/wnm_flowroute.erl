@@ -249,6 +249,12 @@ make_numbers_request(Method, Path, BinBody, Props) ->
                                               ,[append]),
             lager:debug("flowroute.com request error: 503"),
             {error, server_error};
+       {ok, "504", _, _Response} ->
+            ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
+                                              ,io_lib:format("Response:~n504~n~s~n", [_Response])
+                                              ,[append]),
+            lager:debug("flowroute.com request error: 504 (gateway time-out)"),
+            {error, server_error};
         {ok, "201", _, _Response} ->
             ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
                                               ,io_lib:format("Response:~n201~n~s~n", [_Response])
