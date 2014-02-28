@@ -137,6 +137,12 @@ make_numbers_request(Method, Path, Body, Props) ->
     URI = lists:flatten([?FR_NUMBER_URL, Path]),
     ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
                                       ,io_lib:format("Request:~n~s ~s~n~s~n", [Method, URL, Body])),
+    if
+        Body == <<"">> ->
+            Body = "";
+        true ->
+            wh_json:encode(Body)
+    end,
     Signature = compute_signature(Timestamp, Method, Body, URI, Query),
     Headers = [{"Accept", "application/json"}
                ,{"User-Agent", ?WNM_USER_AGENT}
