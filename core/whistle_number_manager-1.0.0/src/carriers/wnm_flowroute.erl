@@ -122,7 +122,7 @@ acquire_number(#number{auth_by=AuthBy, assigned_to=AssignedTo, module_data=Data}
                                                ,io_lib:format("Number:~n~p~n", [N])),
             Body = [{<<"billing_method">>, <<"METERED">>}],
             Props = [],
-            case make_numbers_request(put, concat(?FR_PURCHASE_TNS_PATH, N#number.number), Body, Props) of
+            case make_numbers_request(put, lists:concat(?FR_PURCHASE_TNS_PATH, N#number.number), Body, Props) of
                 {'error', Reason} ->
                     Error = <<"Unable to acquire number: ", (wh_util:to_binary(Reason))/binary>>,
                     wnm_number:error_carrier_fault(Error, N);
@@ -148,7 +148,7 @@ acquire_number(#number{auth_by=AuthBy, assigned_to=AssignedTo, module_data=Data}
                                  || Route <- Routes],
 
                     RoutesBody = [{<<"routes">>, props:filter_undefined(RoutesList)}],
-                    case make_numbers_request(patch, concat(?FR_PURCHASE_TNS_PATH, N#number.number), RoutesBody, Props) of
+                    case make_numbers_request(patch, lists:concat(?FR_PURCHASE_TNS_PATH, N#number.number), RoutesBody, Props) of
                         {'error', Reason} ->
                             Error = <<"Unable to acquire number: ", (wh_util:to_binary(Reason))/binary>>,
                             wnm_number:error_carrier_fault(Error, N);
