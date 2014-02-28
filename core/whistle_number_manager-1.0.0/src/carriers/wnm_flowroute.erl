@@ -153,7 +153,7 @@ acquire_number(#number{auth_by=AuthBy, assigned_to=AssignedTo, module_data=Data}
                             Error = <<"Unable to acquire number: ", (wh_util:to_binary(Reason))/binary>>,
                             wnm_number:error_carrier_fault(Error, N);
                         {'ok', JsonRoutes} ->
-                            N#number{module_data=number_order_response_to_json(JsonAcquire)}
+                            N#number{module_data=JsonAcquire}
                     end
             end
     end.
