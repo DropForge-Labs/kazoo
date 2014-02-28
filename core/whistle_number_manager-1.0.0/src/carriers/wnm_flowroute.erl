@@ -119,7 +119,7 @@ acquire_number(#number{auth_by=AuthBy, assigned_to=AssignedTo, module_data=Data}
             wnm_number:error_carrier_fault(Error, N);
         'true' ->
             ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com_purchase.xml"
-                                               ,io_lib:format("Request:~n~p~n", [N#number])),
+                                               ,io_lib:format("Number:~n~p~n", [N])),
             Body = [{<<"billing_method">>, <<"METERED">>}],
             Props = [],
             case make_numbers_request(put, concat(?FR_PURCHASE_TNS_PATH, Number), Body, Props) of
