@@ -146,6 +146,8 @@ make_numbers_request(Method, Path, Body, Props) ->
                    ,{inactivity_timeout, 180000}
                    ,{connect_timeout, 180000}
                   ],
+  ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
+                                     ,io_lib:format("Signature: ~s~n~n", [wh_util:to_hex(Signature)])),
     case ibrowse:send_req(URL, Headers, Method, Body, HTTPOptions, 180000) of
         {ok, "401", _, _Response} ->
             ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
@@ -224,7 +226,7 @@ compute_signature(Timestamp, Method, Body, URI, Query) ->
                                        Query
                                       ]),
     ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
-                                       ,io_lib:format("Message String: ~n~s~n", [MessageString])
+                                       ,io_lib:format("Message String: ~n~s~n~n", [MessageString])
                                        ,[append]),
     Utf8Bin = unicode:characters_to_binary(MessageString, unicode, utf8),
     <<Signature:20/binary>> = crypto:sha_mac(SecretKey, Utf8Bin).
