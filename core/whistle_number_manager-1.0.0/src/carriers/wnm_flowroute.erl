@@ -196,7 +196,7 @@ make_numbers_request(Method, Path, BinBody, Props) ->
     IsBodyObj = wh_json:is_json_object(BinBody),
     if
         IsBodyObj ->
-            Body = wh_util:to_lower_string(wh_json:encode(BinBody))
+            Body = wh_util:to_lower_string(wh_json:encode(BinBody));
         true ->
             Body = "";
     end,
