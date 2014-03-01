@@ -206,7 +206,7 @@ make_numbers_request(Method, Path, BinBody, Props) ->
                ,{"User-Agent", ?WNM_USER_AGENT}
                ,{"X-Timestamp", Timestamp}],
     if
-        length(Body) > 0 ->
+        wh_json:is_object(Body) ->
             Headers = lists:append(InitialHeaders, [{"Content-Type", "application/json"}]);
         true ->
             Headers = InitialHeaders
@@ -221,7 +221,7 @@ make_numbers_request(Method, Path, BinBody, Props) ->
                                      ,[append]),
     IsMember = lists:member({"Content-Type", "application/json"}, Headers),
     if
-        length(Body) > 0 andalso IsMember orelse length(Body) == 0 ->
+        wh_json:is_object(Body) > 0 andalso IsMember orelse length(Body) == 0 ->
             case ibrowse:send_req(URL, Headers, Method, Body, HTTPOptions, 180000) of
                 {ok, "401", _, _Response} ->
                     ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
