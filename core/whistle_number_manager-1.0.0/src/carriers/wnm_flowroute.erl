@@ -216,7 +216,7 @@ make_numbers_request(Method, Path, BinBody, Props) ->
                    ,{connect_timeout, 180000}
                   ],
     ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
-                                     ,io_lib:format("Signature: ~s~n~nHeaders:~n~p~n", [wh_util:to_hex(Signature), Headers])
+                                     ,io_lib:format("Signature: ~s~n~nBody Len: ~s~nHeaders:~n~p~n", [wh_util:to_hex(Signature), length(Body), Headers])
                                      ,[append]),
     IsMember = lists:member({"Content-Type", "application/json"}, Headers),
     if
