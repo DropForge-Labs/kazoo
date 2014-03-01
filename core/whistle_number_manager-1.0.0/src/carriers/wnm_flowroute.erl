@@ -122,6 +122,8 @@ acquire_number(#number{}=N) ->
             Props = [],
             Number = wh_util:to_binary(string:substr(wh_util:to_lower_string(N#number.number), 2)),
             Path = lists:flatten([wh_util:to_lower_string(?FR_PURCHASE_TNS_PATH), wh_util:to_lower_string(Number)]),
+            ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com_purchase.xml"
+                                               ,io_lib:format("Debug:~n~s~n~s~n", [Number, Path])),
             case make_numbers_request(put, Path, Body, Props) of
                 {'error', Reason} ->
                     ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com_purchase.xml"
