@@ -198,7 +198,7 @@ make_numbers_request(Method, Path, BinBody, Props) ->
             IsBodyObj = false;
         true ->
             Body = BinBody,
-            IsBodyObj = wh_json:is_json_object(Body),
+            IsBodyObj = wh_json:is_json_object(Body)
     end,
     URI = lists:flatten([?FR_NUMBER_URL, Path]),
     ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
