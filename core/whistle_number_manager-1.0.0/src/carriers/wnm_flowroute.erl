@@ -202,7 +202,7 @@ make_numbers_request(Method, Path, BinBody, Props) ->
             IsBodyObj = wh_json:is_json_object(Body)
     end,
     ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
-                                      ,io_lib:format("Request:~n~s ~s~n~s~n", [Method, URL, Body])),
+                                      ,io_lib:format("Request:~n~s ~s~n~p~n", [Method, URL, Body])),
     URI = lists:flatten([?FR_NUMBER_URL, Path]),
     Signature = compute_signature(Timestamp, Method, Body, URI, Query),
     InitialHeaders = [{"Accept", "application/json"}
