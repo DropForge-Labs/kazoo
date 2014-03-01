@@ -219,9 +219,10 @@ make_numbers_request(Method, Path, BinBody, Props) ->
     ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
                                      ,io_lib:format("Signature: ~s~n~nBody Len: ~s~nHeaders:~n~p~n", [wh_util:to_hex(Signature), length(Body), Headers])
                                      ,[append]),
+    IsObject = wh_json:is_object(Body),
     IsMember = lists:member({"Content-Type", "application/json"}, Headers),
     if
-        wh_json:is_object(Body) > 0 andalso IsMember orelse length(Body) == 0 ->
+         IsObject andalso IsMember orelse length(Body) == 0 ->
             case ibrowse:send_req(URL, Headers, Method, Body, HTTPOptions, 180000) of
                 {ok, "401", _, _Response} ->
                     ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
