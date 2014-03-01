@@ -198,7 +198,7 @@ make_numbers_request(Method, Path, BinBody, Props) ->
         IsBodyObj ->
             Body = wh_util:to_lower_string(wh_json:encode(BinBody));
         true ->
-            Body = "";
+            Body = ""
     end,
     ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
                                       ,io_lib:format("Request:~n~s ~s~n~p~n", [Method, URL, Body])),
