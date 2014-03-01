@@ -222,7 +222,7 @@ make_numbers_request(Method, Path, BinBody, Props) ->
                                      ,[append]),
     IsMember = lists:member({"Content-Type", "application/json"}, Headers),
     if
-         IsBodyObj andalso IsMember orelse length(Body) == 0 ->
+         IsBodyObj andalso IsMember orelse is_list(Body) andalso length(Body) == 0 ->
             case ibrowse:send_req(URL, Headers, Method, Body, HTTPOptions, 180000) of
                 {ok, "401", _, _Response} ->
                     ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
