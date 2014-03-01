@@ -194,9 +194,11 @@ make_numbers_request(Method, Path, BinBody, Props) ->
     end,
     if
         BinBody == <<"">> ->
-            Body = "";
+            Body = "",
+            IsBodyObj = false;
         true ->
-            Body = BinBody
+            Body = BinBody,
+            IsBodyObj = wh_json:is_json_object(Body),
     end,
     URI = lists:flatten([?FR_NUMBER_URL, Path]),
     ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
@@ -205,7 +207,6 @@ make_numbers_request(Method, Path, BinBody, Props) ->
     InitialHeaders = [{"Accept", "application/json"}
                ,{"User-Agent", ?WNM_USER_AGENT}
                ,{"X-Timestamp", Timestamp}],
-    IsBodyObj = wh_json:is_json_object(Body),
     if
         IsBodyObj ->
             Headers = lists:append(InitialHeaders, [{"Content-Type", "application/json"}]);
