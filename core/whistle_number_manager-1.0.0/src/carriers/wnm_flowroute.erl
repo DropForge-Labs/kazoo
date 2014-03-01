@@ -222,7 +222,7 @@ make_numbers_request(Method, Path, BinBody, Props) ->
                                      ,[append]),
     IsMember = lists:member({"Content-Type", "application/json"}, Headers),
     if
-         IsBodyObj andalso IsMember orelse is_list(Body) andalso length(Body) == 0 ->
+        (IsBodyObj andalso IsMember) orelse (is_list(Body) andalso length(Body)) == 0 ->
             case ibrowse:send_req(URL, Headers, Method, Body, HTTPOptions, 180000) of
                 {ok, "401", _, _Response} ->
                     ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
@@ -309,11 +309,11 @@ make_numbers_request(Method, Path, BinBody, Props) ->
                     lager:debug("flowroute.com request error: ~p", [E]),
                     E
             end;
-    true ->
-        ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
-                                         ,io_lib:format("Signature: ~s~n~nHeaders:~n~p~n", [wh_util:to_hex(Signature), Headers])
-                                         ,[append]),
-       {error, "No Content-Type Header"}
+        true ->
+            ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
+                                               ,io_lib:format("Signature: ~s~n~nHeaders:~n~p~n", [wh_util:to_hex(Signature), Headers])
+                                               ,[append]),
+            {error, "No Content-Type Header"}
     end.
 
 %%--------------------------------------------------------------------
