@@ -6,7 +6,7 @@
 -record(number, {number :: api_binary()
                  ,number_db :: api_binary()
                  ,state = <<"discovery">> :: ne_binary()
-                 ,current_lesstate = <<"discovery">> :: ne_binary()
+                 ,current_state = <<"discovery">> :: ne_binary()
                  ,reserve_history = ordsets:new() :: ordsets:ordset(ne_binary())
                  ,assign_to :: api_binary()
                  ,assigned_to :: api_binary()
