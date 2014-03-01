@@ -216,7 +216,7 @@ make_numbers_request(Method, Path, BinBody, Props) ->
                    ,{connect_timeout, 180000}
                   ],
     ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
-                                     ,io_lib:format("Signature: ~s~n~n", [wh_util:to_hex(Signature)])
+                                     ,io_lib:format("Signature: ~s~n~n~nHeaders:~n~s~n", [wh_util:to_hex(Signature), lists:flatten(Headers)])
                                      ,[append]),
     case ibrowse:send_req(URL, Headers, Method, Body, HTTPOptions, 180000) of
         {ok, "401", _, _Response} ->
