@@ -122,8 +122,6 @@ acquire_number(#number{}=N) ->
             Props = [],
             Number = wh_util:to_binary(string:substr(wh_util:to_lower_string(N#number.number), 2)),
             Path = lists:flatten([wh_util:to_lower_string(?FR_PURCHASE_TNS_PATH), wh_util:to_lower_string(Number)]),
-            ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com_purchase.xml"
-                                               ,io_lib:format("Debug:~n~s~n~s~n", [Number, Path])),
             case make_numbers_request(put, Path, Body, Props) of
                 {'error', Reason} ->
                     ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com_purchase.xml"
@@ -203,9 +201,9 @@ make_numbers_request(Method, Path, BinBody, Props) ->
             Body = BinBody,
             IsBodyObj = wh_json:is_json_object(Body)
     end,
-    URI = lists:flatten([?FR_NUMBER_URL, Path]),
     ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
                                       ,io_lib:format("Request:~n~s ~s~n~s~n", [Method, URL, Body])),
+    URI = lists:flatten([?FR_NUMBER_URL, Path]),
     Signature = compute_signature(Timestamp, Method, Body, URI, Query),
     InitialHeaders = [{"Accept", "application/json"}
                ,{"User-Agent", ?WNM_USER_AGENT}
