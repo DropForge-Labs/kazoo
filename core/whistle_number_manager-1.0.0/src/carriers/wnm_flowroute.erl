@@ -193,13 +193,12 @@ make_numbers_request(Method, Path, BinBody, Props) ->
         true ->
             URL = lists:flatten([?FR_NUMBER_URL, Path])
     end,
+    IsBodyObj = wh_json:is_json_object(BinBody),
     if
-        BinBody == <<"">> ->
-            Body = "",
-            IsBodyObj = false;
+        IsBodyObj ->
+            Body = wh_util:to_lower_string(wh_json:encode(BinBody))
         true ->
-            Body = BinBody,
-            IsBodyObj = wh_json:is_json_object(Body)
+            Body = "";
     end,
     ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
                                       ,io_lib:format("Request:~n~s ~s~n~p~n", [Method, URL, Body])),
