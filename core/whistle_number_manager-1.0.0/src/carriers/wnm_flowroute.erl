@@ -204,14 +204,13 @@ make_numbers_request(Method, Path, BinBody, Props) ->
                                       ,io_lib:format("Request:~n~s ~s~n~p~n", [Method, URL, Body])),
     URI = lists:flatten([?FR_NUMBER_URL, Path]),
     Signature = compute_signature(Timestamp, Method, Body, URI, Query),
-    InitialHeaders = [{"Accept", "application/json"}
-               ,{"User-Agent", ?WNM_USER_AGENT}
-               ,{"X-Timestamp", Timestamp}],
+    InitialHeaders = [{"User-Agent", ?WNM_USER_AGENT}
+                       ,{"X-Timestamp", Timestamp}],
     if
         IsBodyObj ->
             Headers = lists:append(InitialHeaders, [{"Content-Type", "application/json"}]);
         true ->
-            Headers = InitialHeaders
+            Headers = lists:append(InitialHeaders, [{"Accept", "application/json"}])
     end,
     HTTPOptions = [{ssl,[{verify,0}]}
                    ,{basic_auth, {TechPrefix, wh_util:to_hex(Signature)}}
