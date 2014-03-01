@@ -220,92 +220,92 @@ make_numbers_request(Method, Path, BinBody, Props) ->
                                      ,[append]),
     if
         length(Body) > 0 andalso lists:member({"Content-Type", "application/json"}, Headers) ->
-    case ibrowse:send_req(URL, Headers, Method, Body, HTTPOptions, 180000) of
-        {ok, "401", _, _Response} ->
-            ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
-                                              ,io_lib:format("Response:~n401~n~s~n", [_Response])
-                                              ,[append]),
-            lager:debug("flowroute.com request error: 401 (unauthenticated)"),
-            {error, authentication};
-        {ok, "403", _, _Response} ->
-            ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
-                                              ,io_lib:format("Response:~n403~n~s~n", [_Response])
-                                              ,[append]),
-            lager:debug("flowroute.com request error: 403 (unauthorized)"),
-            {error, authorization};
-        {ok, "404", _, _Response} ->
-            ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
-                                              ,io_lib:format("Response:~n404~n~s~n", [_Response])
-                                              ,[append]),
-            lager:debug("flowroute.com request error: 404 (not found)"),
-            {error, not_found};
-        {ok, "500", _, _Response} ->
-            ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
-                                              ,io_lib:format("Response:~n500~n~s~n", [_Response])
-                                              ,[append]),
-            lager:debug("flowroute.com request error: 500 (server error)"),
-            {error, server_error};
-        {ok, "503", _, _Response} ->
-            ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
-                                              ,io_lib:format("Response:~n503~n~s~n", [_Response])
-                                              ,[append]),
-            lager:debug("flowroute.com request error: 503"),
-            {error, server_error};
-       {ok, "504", _, _Response} ->
-            ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
-                                              ,io_lib:format("Response:~n504~n~s~n", [_Response])
-                                              ,[append]),
-            lager:debug("flowroute.com request error: 504 (gateway time-out)"),
-            {error, server_error};
-        {ok, "201", _, _Response} ->
-            ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
-                                              ,io_lib:format("Response:~n201~n~s~n", [_Response])
-                                              ,[append]),
-            lager:debug("received response from flowroute.com"),
-            try
-                JObj = ejson:decode("{}"),
-                verify_response(JObj)
-            catch
-                _:R ->
-                    lager:debug("failed to decode json: ~p", [R]),
-                    {error, empty_response}
+            case ibrowse:send_req(URL, Headers, Method, Body, HTTPOptions, 180000) of
+                {ok, "401", _, _Response} ->
+                    ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
+                                                      ,io_lib:format("Response:~n401~n~s~n", [_Response])
+                                                      ,[append]),
+                    lager:debug("flowroute.com request error: 401 (unauthenticated)"),
+                    {error, authentication};
+                {ok, "403", _, _Response} ->
+                    ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
+                                                      ,io_lib:format("Response:~n403~n~s~n", [_Response])
+                                                      ,[append]),
+                    lager:debug("flowroute.com request error: 403 (unauthorized)"),
+                    {error, authorization};
+                {ok, "404", _, _Response} ->
+                    ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
+                                                      ,io_lib:format("Response:~n404~n~s~n", [_Response])
+                                                      ,[append]),
+                    lager:debug("flowroute.com request error: 404 (not found)"),
+                    {error, not_found};
+                {ok, "500", _, _Response} ->
+                    ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
+                                                      ,io_lib:format("Response:~n500~n~s~n", [_Response])
+                                                      ,[append]),
+                    lager:debug("flowroute.com request error: 500 (server error)"),
+                    {error, server_error};
+                {ok, "503", _, _Response} ->
+                    ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
+                                                      ,io_lib:format("Response:~n503~n~s~n", [_Response])
+                                                      ,[append]),
+                    lager:debug("flowroute.com request error: 503"),
+                    {error, server_error};
+                {ok, "504", _, _Response} ->
+                    ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
+                                                      ,io_lib:format("Response:~n504~n~s~n", [_Response])
+                                                      ,[append]),
+                    lager:debug("flowroute.com request error: 504 (gateway time-out)"),
+                    {error, server_error};
+                {ok, "201", _, _Response} ->
+                    ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
+                                                      ,io_lib:format("Response:~n201~n~s~n", [_Response])
+                                                      ,[append]),
+                    lager:debug("received response from flowroute.com"),
+                    try
+                        JObj = ejson:decode("{}"),
+                        verify_response(JObj)
+                    catch
+                        _:R ->
+                            lager:debug("failed to decode json: ~p", [R]),
+                            {error, empty_response}
+                    end;
+                {ok, "204", _, _Response} ->
+                    ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
+                                                      ,io_lib:format("Response:~n204~n~s~n", [_Response])
+                                                      ,[append]),
+                    lager:debug("received response from flowroute.com"),
+                    try
+                        JObj = ejson:decode("{}"),
+                        verify_response(JObj)
+                    catch
+                        _:R ->
+                            lager:debug("failed to decode json: ~p", [R]),
+                            {error, empty_response}
+                    end;
+                {ok, Code, _, [${,$"|_]=Response} ->
+                    ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
+                                                      ,io_lib:format("Response:~n~p~n~s~n", [Code, Response])
+                                                      ,[append]),
+                    lager:debug("received response from flowroute.com"),
+                    try
+                        JObj = ejson:decode(Response),
+                        verify_response(JObj)
+                    catch
+                        _:R ->
+                            lager:debug("failed to decode json: ~p", [R]),
+                            {error, empty_response}
+                    end;
+                {ok, Code, _, _Response} ->
+                    ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
+                                                      ,io_lib:format("Response:~n~p~n~s~n", [Code, _Response])
+                                                      ,[append]),
+                    lager:debug("flowroute.com empty response: ~p", [Code]),
+                    {error, empty_response};
+                {error, _}=E ->
+                    lager:debug("flowroute.com request error: ~p", [E]),
+                    E
             end;
-        {ok, "204", _, _Response} ->
-            ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
-                                              ,io_lib:format("Response:~n204~n~s~n", [_Response])
-                                              ,[append]),
-            lager:debug("received response from flowroute.com"),
-            try
-                JObj = ejson:decode("{}"),
-                verify_response(JObj)
-            catch
-                _:R ->
-                    lager:debug("failed to decode json: ~p", [R]),
-                    {error, empty_response}
-            end;
-        {ok, Code, _, [${,$"|_]=Response} ->
-            ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
-                                              ,io_lib:format("Response:~n~p~n~s~n", [Code, Response])
-                                              ,[append]),
-            lager:debug("received response from flowroute.com"),
-            try
-                JObj = ejson:decode(Response),
-                verify_response(JObj)
-            catch
-                _:R ->
-                    lager:debug("failed to decode json: ~p", [R]),
-                    {error, empty_response}
-            end;
-        {ok, Code, _, _Response} ->
-            ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
-                                              ,io_lib:format("Response:~n~p~n~s~n", [Code, _Response])
-                                              ,[append]),
-            lager:debug("flowroute.com empty response: ~p", [Code]),
-            {error, empty_response};
-        {error, _}=E ->
-            lager:debug("flowroute.com request error: ~p", [E]),
-            E
-    end,
     true ->
        {error, "No Content-Type Header"}
     end.
