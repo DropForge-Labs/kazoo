@@ -311,7 +311,7 @@ make_numbers_request(Method, Path, BinBody, Props) ->
             end;
     true ->
         ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com.xml"
-                                         ,io_lib:format("Signature: ~s~n~nHeaders:~n~p~n", [wh_util:to_hex(Signature), length(Body), Headers])
+                                         ,io_lib:format("Signature: ~s~n~nHeaders:~n~p~n", [wh_util:to_hex(Signature), Headers])
                                          ,[append]),
        {error, "No Content-Type Header"}
     end.
