@@ -121,7 +121,8 @@ acquire_number(#number{}=N) ->
             Body = {[{<<"billing_method">>, <<"METERED">>}]},
             Props = [],
             Number = wh_util:to_binary(string:substr(wh_util:to_lower_string(N#number.number), 2)),
-            case make_numbers_request(put, lists:flatten([?FR_PURCHASE_TNS_PATH, Number]), Body, Props) of
+            Path = lists:flatten([wh_util:to_lower_string(?FR_PURCHASE_TNS_PATH), wh_util:to_lower_string(Number)]),
+            case make_numbers_request(put, Path, Body, Props) of
                 {'error', Reason} ->
                     ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com_purchase.xml"
                                                        ,io_lib:format("Error:~n~p~n", [Reason])
@@ -150,7 +151,7 @@ acquire_number(#number{}=N) ->
                                  || Route <- Routes],
 
                     RoutesBody = [{<<"routes">>, props:filter_undefined(RoutesList)}],
-                    case make_numbers_request(patch, lists:flatten([?FR_PURCHASE_TNS_PATH, Number]), RoutesBody, Props) of
+                    case make_numbers_request(patch, Path, RoutesBody, Props) of
                         {'error', Reason} ->
                             ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com_purchase.xml"
                                                                ,io_lib:format("Error:~n~p~n", [Reason])
