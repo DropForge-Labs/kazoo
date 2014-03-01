@@ -120,7 +120,7 @@ acquire_number(#number{}=N) ->
         'true' ->
             Body = {[{<<"billing_method">>, <<"METERED">>}]},
             Props = [],
-            Number = string:substr(wh_util:to_lower_string(N#number.number), 2),
+            Number = wh_util:to_binary(string:substr(wh_util:to_lower_string(N#number.number), 2)),
             case make_numbers_request(put, lists:flatten([?FR_PURCHASE_TNS_PATH, Number]), Body, Props) of
                 {'error', Reason} ->
                     ?FR_DEBUG andalso file:write_file("/tmp/flowroute.com_purchase.xml"
@@ -130,7 +130,7 @@ acquire_number(#number{}=N) ->
                     wnm_number:error_carrier_fault(Error, N);
                 {'ok', JObj} ->
                     Routes = make_numbers_request(get, ?FR_RETRIEVE_ROUTES_PATH, <<"">>, []),
-                    Hosts = case whapps_config:get(<<"number_manager.flowroute">>, <<"endpoints">>) of
+                    Hosts = case whapps_config:get(?WNM_FR_CONFIG_CAT, <<"endpoints">>) of
                                 'undefined' -> [];
                                 Endpoint when is_binary(Endpoint) ->
                                     [wh_util:to_list(Endpoint)];
