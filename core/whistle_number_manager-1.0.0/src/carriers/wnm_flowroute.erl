@@ -212,7 +212,7 @@ make_numbers_request(Method, Path, BinBody, Props) ->
         true ->
             Headers = lists:append(InitialHeaders, [{"Accept", "application/json"}])
     end,
-    HTTPOptions = [{ssl,[{verify,0}]}
+    HTTPOptions = [{ssl,[{verify,1}]}
                    ,{basic_auth, {TechPrefix, wh_util:to_hex(Signature)}}
                    ,{inactivity_timeout, 180000}
                    ,{connect_timeout, 180000}
